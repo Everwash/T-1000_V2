@@ -71,6 +71,5 @@
         "commands": "platformio-ide.rebuildProjectIndex"
       }
     ],
-    "C_Cpp.dimInactiveRegions": false,
-    "idf.currentSetup": "C:\\Users\\pvtjo\\esp\\v5.2.1\\esp-idf"
+    "C_Cpp.dimInactiveRegions": false
   }
