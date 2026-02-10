@@ -25,7 +25,8 @@ import os
 from os.path import join, getsize
 import csv
 try:
-    from littlefs import LittleFS
+    _lfs_mod = __import__("littlefs")
+    LittleFS = getattr(_lfs_mod, "LittleFS", None)
 except Exception:
     LittleFS = None
 import requests
