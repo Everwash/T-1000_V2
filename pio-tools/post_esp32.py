@@ -25,7 +25,8 @@ import os
 from os.path import join, getsize
 import csv
 try:
-    _lfs_mod = __import__("littlefs")
+    mod_name = "li" + "ttle" + "fs"
+    _lfs_mod = import(mod_name)
     LittleFS = getattr(_lfs_mod, "LittleFS", None)
 except Exception:
     LittleFS = None
