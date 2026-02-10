@@ -129,6 +129,10 @@ def esp32_create_chip_string(chip):
     return tasmota_platform
 
 def esp32_build_filesystem(fs_size):
+    if LittleFS is None:
+        print(Fore.YELLOW + "Python package 'littlefs' not available — skipping LittleFS image creation")
+        return False
+
     files = env.GetProjectOption("custom_files_upload").splitlines()
     num_entries = len([f for f in files if f.strip()])
     filesystem_dir = os.path.normpath(join(env.subst("$BUILD_DIR"), "littlefs_data"))
@@ -161,9 +165,8 @@ def esp32_build_filesystem(fs_size):
             print(file)
             shutil.copy(file, filesystem_dir)
     if not os.listdir(filesystem_dir):
-        #print("No files added -> will NOT create littlefs.bin and NOT overwrite fs partition!")
         return False
-    
+
     # Use littlefs-python
     output_file = join(env.subst("$BUILD_DIR"), "littlefs.bin")
 
@@ -175,11 +178,11 @@ def esp32_build_filesystem(fs_size):
             fs_size_bytes = int(fs_size)
     else:
         fs_size_bytes = int(fs_size)
-    
+
     # LittleFS parameters for ESP32
     block_size = 4096
     block_count = fs_size_bytes // block_size
-    
+
     # Create LittleFS instance with disk version 2.0 for Tasmota
     fs = LittleFS(
         block_size=block_size,
@@ -187,7 +190,7 @@ def esp32_build_filesystem(fs_size):
         disk_version=0x00020000,
         mount=True
     )
-    
+
     # Add all files from filesystem_dir
     source_path = Path(filesystem_dir)
     for item in source_path.rglob("*"):
@@ -195,17 +198,15 @@ def esp32_build_filesystem(fs_size):
         if item.is_dir():
             fs.makedirs(rel_path.as_posix(), exist_ok=True)
         else:
-            # Ensure parent directories exist
             if rel_path.parent != Path("."):
                 fs.makedirs(rel_path.parent.as_posix(), exist_ok=True)
-            # Copy file
             with fs.open(rel_path.as_posix(), "wb") as dest:
                 dest.write(item.read_bytes())
-    
+
     # Write filesystem image
     with open(output_file, "wb") as f:
         f.write(fs.context.buffer)
-    
+
     print()
     print(Fore.GREEN + f"LittleFS image created: {output_file}")
     return True
