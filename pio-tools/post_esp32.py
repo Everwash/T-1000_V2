@@ -24,7 +24,10 @@ from genericpath import exists
 import os
 from os.path import join, getsize
 import csv
-from littlefs import LittleFS
+try:
+    from littlefs import LittleFS
+except Exception:
+    LittleFS = None
 import requests
 import shutil
 import subprocess
