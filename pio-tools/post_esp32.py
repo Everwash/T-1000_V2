@@ -24,10 +24,7 @@ from genericpath import exists
 import os
 from os.path import join, getsize
 import csv
-try:
-    from littlefs import LittleFS
-except Exception:
-    LittleFS = None
+from littlefs import LittleFS
 import requests
 import shutil
 import subprocess
@@ -132,11 +129,6 @@ def esp32_create_chip_string(chip):
     return tasmota_platform
 
 def esp32_build_filesystem(fs_size):
-    if LittleFS is None:
-        print(Fore.YELLOW + "Python module 'littlefs' not found; skipping LittleFS image creation.")
-        print(Fore.YELLOW + "Install it with: python -m pip install --user littlefs")
-        return False
-
     files = env.GetProjectOption("custom_files_upload").splitlines()
     num_entries = len([f for f in files if f.strip()])
     filesystem_dir = os.path.normpath(join(env.subst("$BUILD_DIR"), "littlefs_data"))
