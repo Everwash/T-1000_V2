@@ -429,6 +429,7 @@ extern "C" {
   be_return_nil(vm);
 #endif // USE_WEB_STATUS_LINE
 }
+}   // extern "C"
 
 #endif // USE_WEBSERVER
 #endif  // USE_BERRY
